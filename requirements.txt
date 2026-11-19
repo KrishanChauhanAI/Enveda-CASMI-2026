@@ -1,0 +1,9 @@
+# Install in a Python environment compatible with the selected PyTorch build.
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14
+matplotlib>=3.8
+seaborn>=0.13
+scikit-learn>=1.4
+torch>=2.2
+rdkit>=2023.9
