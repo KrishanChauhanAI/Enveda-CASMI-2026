@@ -1,6 +1,6 @@
 # Competition data dictionary
 
-**Version 1.0.0 | 2026-11-19 UTC**
+**Version 1.1.0 | 2026-11-19 UTC**
 
 This is a guide transcribed from the official Kaggle Data tab, not a substitute for checking the actual parquet. `src/task1_eda.py` reports actual Arrow types, null counts, value counts, and row/molecule cardinalities on the files you run it against. There is one row per spectrum; repeated `molecule_id` values are expected and must be grouped for prediction.
 
@@ -36,4 +36,4 @@ This is a guide transcribed from the official Kaggle Data tab, not a substitute 
 
 ## Official documented scale / interpretation
 
-Kaggle reports approximately 2.5 million training spectra and 275k unique structures; visible test preview has approximately 1.5k spectra for 400 molecules, typically 1–16 spectra per molecule. The preview is training-derived and replaced with hidden test data on rerun, so it is not independent validation. Training library sizes overlap at the compound level; counts by source do not sum to unique structures. The test preview is all `timsTOF`; `enveda-180` and `enveda-np-examples` are the training sources documented as uniformly matching that instrument. The actual downloaded file and run-time mount must be audited before relying on approximate counts or schema.
+Kaggle reports approximately 2.5 million training spectra and 275k unique structures; visible test preview has approximately 1.5k spectra for 400 molecules, typically 1–16 spectra per molecule. The preview is training-derived and replaced with hidden test data on rerun, so it is not independent validation. Training library sizes overlap at the compound level; counts by source do not sum to unique structures. The test preview is all `timsTOF`; `enveda-180` and `enveda-np-examples` are the training sources documented as uniformly matching that instrument. The actual downloaded file and run-time mount must be audited before relying on approximate counts or schema. The page itself has two documentation inconsistencies: it enumerates ten test adducts but elsewhere says “one of the seven above,” and labels train as 18 columns despite listing 12 test columns plus the training-only fields (20 if `inchikey` and `inchikey14` are distinct). Arrow schema is the authority.

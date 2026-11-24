@@ -1,8 +1,12 @@
 # Enveda CASMI 2026 — staged solution development
 
-**Project version:** see [`VERSION`](VERSION); changes and evidence are tracked in [`CHANGELOG.md`](CHANGELOG.md) and [`docs/verification_matrix.md`](docs/verification_matrix.md).
+**Project version:** see [`VERSION`](VERSION); the current scientific plan is [`docs/analysis_and_action_plan.md`](docs/analysis_and_action_plan.md), and changes/evidence are tracked in [`CHANGELOG.md`](CHANGELOG.md) and [`docs/verification_matrix.md`](docs/verification_matrix.md).
 
-See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for the competition contract and initial research notes; [`docs/task_plan.md`](docs/task_plan.md) records the staged work packages and acceptance gates. Third-party repository review/installation status and safety notes are in [`docs/third_party_tooling.md`](docs/third_party_tooling.md).
+See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for initial research; [`docs/analysis_and_action_plan.md`](docs/analysis_and_action_plan.md) is the current scientific plan; [`docs/task_plan.md`](docs/task_plan.md) records work packages. Third-party repository review and safety notes are in [`docs/third_party_tooling.md`](docs/third_party_tooling.md).
+
+## Colab / Jupyter workbench
+
+Open [`notebooks/CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) from the extracted project ZIP. Configure `DATA_DIR` to the local/Drive folder with Parquet files. The workbench runs data audit, tests and preprocessing checks; the optional bounded PyTorch run is a smoke test only, **not a competition-ready predictor**.
 
 ## Task 1: data understanding and EDA
 

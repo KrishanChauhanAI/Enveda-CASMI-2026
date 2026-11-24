@@ -1,13 +1,12 @@
 """Offline CASMI starter: spectrum-to-fingerprint PyTorch model and candidate ranking.
 
-Version 0.3.0 | 2026-11-19 UTC. Corrects test adduct shifts; still a prototype requiring streamed training.
+Version 0.4.0 | 2026-11-19 UTC. Removes unused data retention; prototype still needs streamed training.
 Test-only data can be audited, but cannot supervise or validate molecular predictions.
 """
 from __future__ import annotations
 
 import argparse
 import json
-import math
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -62,12 +61,12 @@ def encode_spectrum(mzs: Any, intensities: Any) -> np.ndarray:
 
 
 # Build one training example per spectrum while preserving labels and molecule groups for leakage-safe splitting.
-def build_training(frame: pd.DataFrame, smiles_col: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
+def build_training(frame: pd.DataFrame, smiles_col: str) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     required = {"ms2_mzs", "ms2_normalized_intensities", smiles_col}
     missing = required - set(frame.columns)
     if missing:
         raise ValueError(f"Training parquet lacks required fields: {sorted(missing)}")
-    x, y, groups, smiles_list = [], [], [], []
+    x, y, groups = [], [], []
     for row in frame.itertuples(index=False):
         row_data = row._asdict()
         smi = str(row_data.get(smiles_col, ""))
@@ -79,10 +78,9 @@ def build_training(frame: pd.DataFrame, smiles_col: str) -> tuple[np.ndarray, np
         x.append(encode_spectrum(row_data["ms2_mzs"], row_data["ms2_normalized_intensities"]))
         y.append(fp)
         groups.append(str(row_data.get("molecule_id", smi)))
-        smiles_list.append(smi)
     if not x:
         raise ValueError("No usable labeled spectra. Check SMILES column name and data contents.")
-    return np.stack(x), np.stack(y), np.asarray(groups), smiles_list
+    return np.stack(x), np.stack(y), np.asarray(groups)
 
 
 # Define a compact convolutional encoder and multi-label Morgan fingerprint prediction head.
@@ -169,7 +167,7 @@ def train_model(x: np.ndarray, y: np.ndarray, groups: np.ndarray, args: argparse
 
 
 # Aggregate multiple spectra of a molecule into a single mean binned representation.
-def aggregate_test(frame: pd.DataFrame) -> tuple[list[str], np.ndarray, pd.DataFrame]:
+def aggregate_test(frame: pd.DataFrame) -> tuple[list[str], np.ndarray]:
     required = {"molecule_id", "ms2_mzs", "ms2_normalized_intensities"}
     missing = required - set(frame.columns)
     if missing:
@@ -180,7 +178,7 @@ def aggregate_test(frame: pd.DataFrame) -> tuple[list[str], np.ndarray, pd.DataF
         rows[str(data["molecule_id"])].append(encode_spectrum(data["ms2_mzs"], data["ms2_normalized_intensities"]))
     ids = list(rows)
     spectra = np.stack([np.mean(rows[k], axis=0) for k in ids])
-    return ids, spectra, frame
+    return ids, spectra
 
 
 # Rank available training structures by predicted fingerprint agreement and precursor mass consistency.
@@ -290,9 +288,9 @@ def main() -> None:
     if not args.train.exists() or not args.test.exists():
         raise FileNotFoundError(f"Need both labeled training and test parquet files; train={args.train.exists()}, test={args.test.exists()}")
     train, test = pd.read_parquet(args.train), pd.read_parquet(args.test)
-    x, y, groups, _ = build_training(train, args.smiles_column)
+    x, y, groups = build_training(train, args.smiles_column)
     model, metrics = train_model(x, y, groups, args, args.out)
-    ids, test_x, _ = aggregate_test(test)
+    ids, test_x = aggregate_test(test)
     device = torch.device("cuda" if torch.cuda.is_available() and not args.cpu else "cpu")
     # Candidate fallback is available training structures only; no arbitrary external chemistry is invented.
     predictions = rank_candidates(model, ids, test_x, train, test, args.smiles_column, device)
