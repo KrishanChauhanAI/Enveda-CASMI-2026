@@ -2,6 +2,12 @@
 
 All project changes use semantic versions. Any source, test, notebook, or workflow change must update `VERSION`, add a changelog entry, and update the affected module/notebook version header in the same change. Each entry records scope, evidence, and unresolved acceptance gates; version bumps do not imply an accuracy improvement.
 
+## 0.6.0 — 2026-11-19
+
+- Add a self-contained Task 1 notebook that imports no project `src/` files and processes every train/test Parquet row and column in bounded Arrow batches.
+- Add exact ID/category/null/peak-array audit counts, disk-backed spectrum-ID duplicate check, bounded plotting sample, synthetic scanner test, and 3x3 diagnostic visualizations.
+- **Verification:** notebook code cells parse; synthetic full-scan and chart smoke tests pass. Actual Kaggle Parquet scans remain pending because files are not mounted.
+
 ## 0.5.0 — 2026-11-19
 
 - Add a unified Colab/local Jupyter workbench for data audit, unit tests, preprocessing checks and opt-in bounded PyTorch smoke run.

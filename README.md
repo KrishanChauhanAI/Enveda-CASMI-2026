@@ -6,7 +6,9 @@ See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md)
 
 ## Colab / Jupyter workbench
 
-Open [`notebooks/CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) from the extracted project ZIP. Configure `DATA_DIR` to the local/Drive folder with Parquet files. The workbench runs data audit, tests and preprocessing checks; the optional bounded PyTorch run is a smoke test only, **not a competition-ready predictor**.
+For a self-contained, full-file EDA scan with all code inline (no `src/` imports), open [`notebooks/CASMI_2026_complete_data_eda_v0.6.0.ipynb`](notebooks/CASMI_2026_complete_data_eda_v0.6.0.ipynb). It processes all rows in batches and retains only a bounded sample for plotting; it does not materialize the multi-GB training set in RAM. Set `DATA_DIR` to the local/Drive folder containing both parquet files.
+
+The earlier [`CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) covers audit, unit tests, preprocessing and optional model smoke checks, but imports project modules; its bounded PyTorch run is **not a competition-ready predictor**.
 
 ## Task 1: data understanding and EDA
 
