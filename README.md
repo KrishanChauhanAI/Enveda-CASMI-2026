@@ -6,7 +6,7 @@ See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md)
 
 ## Colab / Jupyter workbench
 
-For a self-contained, full-file EDA scan with all code inline (no `src/` imports), open [`notebooks/CASMI_2026_complete_data_eda_v0.6.0.ipynb`](notebooks/CASMI_2026_complete_data_eda_v0.6.0.ipynb). It processes all rows in batches and retains only a bounded sample for plotting; it does not materialize the multi-GB training set in RAM. Set `DATA_DIR` to the local/Drive folder containing both parquet files.
+For the latest self-contained workbench (all code inline, no `src/` imports), open [`notebooks/CASMI_2026_local_eda_v0.7.0.ipynb`](notebooks/CASMI_2026_local_eda_v0.7.0.ipynb). It scans every available Parquet row in batches, exports raw first/last-five records, creates individual 600-DPI charts and hoverable HTML plots, and includes Task 2 identity/MRR and Task 3 preprocessing smoke tests. Set `DATA_DIR` to the local/Drive folder containing Parquet files; the complete train scan runs when `train.parquet` is present.
 
 The earlier [`CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) covers audit, unit tests, preprocessing and optional model smoke checks, but imports project modules; its bounded PyTorch run is **not a competition-ready predictor**.
 

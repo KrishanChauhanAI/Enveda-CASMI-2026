@@ -2,6 +2,12 @@
 
 All project changes use semantic versions. Any source, test, notebook, or workflow change must update `VERSION`, add a changelog entry, and update the affected module/notebook version header in the same change. Each entry records scope, evidence, and unresolved acceptance gates; version bumps do not imply an accuracy improvement.
 
+## 0.7.0 — 2026-11-19
+
+- Add a fully inline notebook revision with exact raw first/last-five endpoint exports, complete batch scanning, 600-DPI per-chart PNGs and hoverable HTML plots.
+- Add raw preview, sample/full-count correlation diagnostics, Task 2 identity/MRR tests, and Task 3 preprocessing/adduct smoke tests.
+- **Verification:** executed all notebook code cells against the available test preview: 1,213 rows / 400 molecules scanned; identity/preprocessing assertions and chart generation passed. `train.parquet` is unavailable, so full train scan and train/test comparisons remain pending.
+
 ## 0.6.0 — 2026-11-19
 
 - Add a self-contained Task 1 notebook that imports no project `src/` files and processes every train/test Parquet row and column in bounded Arrow batches.
