@@ -1,0 +1,7 @@
+# Local tools cloned for review; do not bundle third-party source with competition code.
+.external/
+.venv/
+__pycache__/
+*.py[cod]
+artifacts/
+data/

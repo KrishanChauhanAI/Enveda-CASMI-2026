@@ -25,6 +25,12 @@ The current official Kaggle Data page describes one row per spectrum; prediction
 
 No external repository is installed into this project. Repository existence/organization is not proof of accuracy, winning rank, reproducibility, or license compatibility. Treat them as references and independently reproduce results. The competition data page states CC BY-NC 4.0; inspect every additional resource's terms separately.
 
+## Current implementation status (2026-11-19)
+
+- **Task 1:** scanner, Colab notebook, synthetic test and acceptance guidance exist. Synthetic testing passed; real competition files are not mounted here, so real-data EDA acceptance remains pending.
+- **Task 2:** `src/identity.py` and unit tests implement the official RDKit canonicalization sequence and MRR checks. Six tests passed against RDKit 2026.3.3 in this environment. Final parity against Kaggle's full scorer should still be confirmed in the competition notebook.
+- **Tasks 3–8:** planned only; not yet claimed complete. No full-data training, cross-validation, model selection or leaderboard score has been produced.
+
 ## Ownership / learning workflow
 
 For each task, the code and its tests are the implementation owner; the task report records evidence and outstanding assumptions. Run small tests first, then the real dataset; never represent a planned metric as a measured score. Current artifact: `notebooks/01_task1_data_understanding.ipynb` calling `src/task1_eda.py`. Next increment is Task 2, implemented only after reviewing actual Task 1 schema/results.

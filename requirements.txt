@@ -6,4 +6,4 @@ matplotlib>=3.8
 seaborn>=0.13
 scikit-learn>=1.4
 torch>=2.2
-rdkit>=2023.9
+rdkit==2026.3.3

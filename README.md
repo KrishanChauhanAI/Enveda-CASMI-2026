@@ -1,6 +1,6 @@
 # Enveda CASMI 2026 — staged solution development
 
-See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for the competition contract and initial research notes; [`docs/task_plan.md`](docs/task_plan.md) records the staged work packages and acceptance gates.
+See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for the competition contract and initial research notes; [`docs/task_plan.md`](docs/task_plan.md) records the staged work packages and acceptance gates. Third-party repository review/installation status and safety notes are in [`docs/third_party_tooling.md`](docs/third_party_tooling.md).
 
 ## Task 1: data understanding and EDA
 
@@ -12,6 +12,17 @@ python src/task1_eda.py --test /path/to/test.parquet --train /path/to/train.parq
 ```
 
 Omit `--train` for test-only EDA. Deliverables: `data_dictionary_and_quality.json` and `composite_eda.png`. The scanner uses Arrow batches and a bounded reservoir sample rather than loading the full training table into pandas. A simpler single-file audit is also available in `src/data_audit.py`.
+
+## Task 2: molecular identity and evaluation
+
+`src/identity.py` implements Kaggle's public canonicalization behavior (stereo removed before tautomer canonicalization; pinned `rdkit==2026.3.3`), first-block InChIKey identity, identity deduplication, submission validation, and local MRR@K. It expects one ground-truth SMILES per solution molecule and the competition's semicolon-joined predictions.
+
+```bash
+python -m pip install -r requirements.txt
+PYTHONPATH=. python -m unittest tests.test_identity -v
+```
+
+The tests cover the official stereo/tautomer regression, keto/enol equivalence, different connectivity, reciprocal rank, duplicate candidate identity, and invalid submission rows. The complete metric notebook remains the source of truth; compare Kaggle's provided metric implementation before using this evaluator as a final scorer.
 
 ## PyTorch baseline pipeline (requires train labels and test spectra)
 
