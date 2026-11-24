@@ -1,15 +1,17 @@
 # Enveda CASMI 2026 — staged solution development
 
-See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for competition requirements and research notes.
+See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for the competition contract and initial research notes; [`docs/task_plan.md`](docs/task_plan.md) records the staged work packages and acceptance gates.
 
-## Data audit
+## Task 1: data understanding and EDA
+
+The runnable Colab notebook is [`notebooks/01_task1_data_understanding.ipynb`](notebooks/01_task1_data_understanding.ipynb). For local/Colab terminal execution, install dependencies and use the streaming scanner (safe for the ~3 GB training parquet):
 
 ```bash
 python -m pip install -r requirements.txt
-python src/data_audit.py --test /path/to/test.parquet --out artifacts/stage2_eda
+python src/task1_eda.py --test /path/to/test.parquet --train /path/to/train.parquet --out artifacts/task1
 ```
 
-Optional `--train /path/to/train.parquet` inspects both files. This is useful for schema/EDA without training.
+Omit `--train` for test-only EDA. Deliverables: `data_dictionary_and_quality.json` and `composite_eda.png`. The scanner uses Arrow batches and a bounded reservoir sample rather than loading the full training table into pandas. A simpler single-file audit is also available in `src/data_audit.py`.
 
 ## PyTorch baseline pipeline (requires train labels and test spectra)
 
