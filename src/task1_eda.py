@@ -1,6 +1,6 @@
 """Streaming Task 1 EDA for Enveda CASMI parquet files.
 
-Version 1.0.0 | 2026-11-19 UTC. Works in Colab/local Python; scans large train parquet in batches.
+Version 1.1.0 | 2026-11-19 UTC. Adds exact spectra-per-molecule counts; scans large parquet in batches.
 """
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ def scan_parquet(path: Path, sample_rows: int = 100_000, batch_size: int = 25_00
     nulls = Counter()
     categories: dict[str, Counter] = {name: Counter() for name in ("ingest_lib", "adduct", "ionization_mode", "instrument_type", "collision_energy_orig_units")}
     molecule_ids: set[str] = set()
+    spectra_per_molecule: Counter = Counter()
     n_rows = 0
     seen_rows = 0
     peak_counts: list[int] = []
@@ -36,7 +37,9 @@ def scan_parquet(path: Path, sample_rows: int = 100_000, batch_size: int = 25_00
         for name in frame.columns:
             nulls[name] += int(frame[name].isna().sum())
         if "molecule_id" in frame:
-            molecule_ids.update(frame["molecule_id"].dropna().astype(str).unique())
+            molecule_counts = frame["molecule_id"].dropna().astype(str).value_counts()
+            molecule_ids.update(molecule_counts.index.tolist())
+            spectra_per_molecule.update(molecule_counts.to_dict())
         for col, counts in categories.items():
             if col in frame:
                 counts.update(frame[col].fillna("<NULL>").astype(str).value_counts().to_dict())
@@ -63,6 +66,8 @@ def scan_parquet(path: Path, sample_rows: int = 100_000, batch_size: int = 25_00
                         sample_batches[j] = record
     report = {
         "file": str(path), "rows": n_rows, "unique_molecules": len(molecule_ids),
+        "spectra_per_molecule_quantiles": np.quantile(list(spectra_per_molecule.values()), [0, .25, .5, .75, .95, .99, 1]).tolist() if spectra_per_molecule else [],
+        "spectra_per_molecule_distribution": dict(Counter(spectra_per_molecule.values()).most_common()),
         "columns": [{"name": field.name, "type": str(field.type), "nullable": field.nullable} for field in schema],
         "null_count": dict(nulls),
         "category_counts": {col: counts.most_common(40) for col, counts in categories.items() if counts},

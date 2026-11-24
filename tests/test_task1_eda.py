@@ -1,4 +1,4 @@
-"""Small synthetic integration tests for the bounded-memory Task 1 scanner."""
+"""Task 1 scanner tests — test suite version 1.1.0, 2026-11-19 UTC."""
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +12,7 @@ from src.task1_eda import scan_parquet
 
 # Confirm one-row-per-spectrum files report molecule-level cardinality separately from row counts.
 class Task1EdaTest(unittest.TestCase):
+    # Verify streaming counts and capped row sampling with duplicate molecule IDs.
     def test_streaming_schema_counts_and_sample(self):
         frame = pd.DataFrame({
             "molecule_id": ["mol_a", "mol_a", "mol_b"],
@@ -26,6 +27,7 @@ class Task1EdaTest(unittest.TestCase):
             report, sample = scan_parquet(path, sample_rows=2, batch_size=1, seed=7)
         self.assertEqual(report["rows"], 3)
         self.assertEqual(report["unique_molecules"], 2)
+        self.assertEqual(report["spectra_per_molecule_distribution"], {1: 1, 2: 1})
         self.assertEqual(report["sample_rows"], 2)
         self.assertIn("molecule_id", [x["name"] for x in report["columns"]])
         self.assertEqual(len(sample), 2)

@@ -1,5 +1,7 @@
 # Enveda CASMI 2026 — staged solution development
 
+**Project version:** see [`VERSION`](VERSION); changes and evidence are tracked in [`CHANGELOG.md`](CHANGELOG.md) and [`docs/verification_matrix.md`](docs/verification_matrix.md).
+
 See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md) for the competition contract and initial research notes; [`docs/task_plan.md`](docs/task_plan.md) records the staged work packages and acceptance gates. Third-party repository review/installation status and safety notes are in [`docs/third_party_tooling.md`](docs/third_party_tooling.md).
 
 ## Task 1: data understanding and EDA

@@ -1,6 +1,6 @@
 """Offline CASMI starter: spectrum-to-fingerprint PyTorch model and candidate ranking.
 
-Version 0.2.0 | 2026-11-19 UTC. Intended to run locally with train.parquet + test.parquet.
+Version 0.3.0 | 2026-11-19 UTC. Corrects test adduct shifts; still a prototype requiring streamed training.
 Test-only data can be audited, but cannot supervise or validate molecular predictions.
 """
 from __future__ import annotations
@@ -17,6 +17,11 @@ import pandas as pd
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
+
+try:
+    from .chemistry import neutral_mass
+except ImportError:  # Support direct execution as `python src/solution.py`.
+    from chemistry import neutral_mass
 
 BIN_WIDTH = 0.5
 MAX_MZ = 2048.0
@@ -35,20 +40,6 @@ def smiles_to_fp(smiles: str) -> np.ndarray:
     result = np.zeros((FP_BITS,), dtype=np.int8)
     DataStructs.ConvertToNumpyArray(fp, result)
     return result.astype(np.float32)
-
-
-# Convert adducted precursor m/z to an approximate neutral mass for conservative candidate filtering.
-def neutral_mass(mz: float, adduct: Any) -> float:
-    text = str(adduct).replace(" ", "").lower()
-    shifts = {
-        "[m+h]+": 1.007276, "[m+h]+1": 1.007276, "[m+na]+": 22.989218,
-        "[m+nh4]+": 18.033823, "[m-h]-": -1.007276, "[m+cl]-": 34.969402,
-        "[m+hcoo]-": 44.998201, "[m+formate]-": 44.998201,
-    }
-    shift = next((v for k, v in shifts.items() if k in text), None)
-    if shift is None or not np.isfinite(mz):
-        return float(mz)
-    return float(mz) - shift
 
 
 # Encode one spectrum as sparse-intensity binned channels, preserving both raw and square-root abundance.
@@ -96,6 +87,7 @@ def build_training(frame: pd.DataFrame, smiles_col: str) -> tuple[np.ndarray, np
 
 # Define a compact convolutional encoder and multi-label Morgan fingerprint prediction head.
 class SpectrumFingerprintNet(nn.Module):
+    # Initialize compact convolution blocks and the fingerprint prediction head.
     def __init__(self, bits: int = FP_BITS) -> None:
         super().__init__()
         self.conv = nn.Sequential(

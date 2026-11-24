@@ -1,4 +1,4 @@
-"""Tests aligned with the official Kaggle metric notebook's identity semantics."""
+"""Identity tests — suite version 1.1.0, 2026-11-19 UTC; includes official metric examples."""
 import unittest
 
 import pandas as pd
@@ -21,6 +21,12 @@ class IdentityMetricTest(unittest.TestCase):
     # Confirm different connectivity remains a distinct identity.
     def test_connectivity_difference_is_not_ignored(self):
         self.assertNotEqual(canonicalize_smiles_to_ik14("CCO"), canonicalize_smiles_to_ik14("CC(=O)O"))
+
+    # Reproduce the public metric notebook's 0.75 example: one rank-1 and one rank-2 hit.
+    def test_official_notebook_example(self):
+        solution = pd.DataFrame({"molecule_id": ["m_1", "m_2"], "smiles": ["CCO", "c1ccccc1"]})
+        submission = pd.DataFrame({"molecule_id": ["m_1", "m_2"], "smiles": ["CCO;CC(=O)O", "CC(=O)O;c1ccccc1"]})
+        self.assertAlmostEqual(mrr_at_k(solution, submission), 0.75)
 
     # Confirm the scoring routine awards reciprocal rank and zero when no answer appears.
     def test_mrr_rank_positions(self):
