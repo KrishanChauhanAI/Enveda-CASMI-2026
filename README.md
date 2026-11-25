@@ -6,7 +6,7 @@ See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md)
 
 ## Colab / Jupyter workbench
 
-For the latest self-contained workbench (all code inline, no `src/` imports), open [`notebooks/CASMI_2026_local_eda_v0.9.0.ipynb`](notebooks/CASMI_2026_local_eda_v0.9.0.ipynb). It scans every available Parquet row in batches, exports raw first/last-five records, displays each static 600-DPI PNG and interactive hoverable Plotly figure inline while saving both PNG and HTML files to `casmi_eda_v0.9.0/`, and includes Task 2 identity/MRR and Task 3 preprocessing smoke tests. Set `DATA_DIR` to the local/Drive folder containing Parquet files; the complete train scan runs when `train.parquet` is present.
+For the latest self-contained pipeline (all code inline, no `src/` imports), open [`notebooks/Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb`](notebooks/Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb). It retains the EDA, then adds staged Task 2–8 identity, preprocessing, spectral similarity, candidate-pool, optional fingerprint-learning, ranking-fusion, and submission utilities with explicit validation gates. Set `DATA_DIR` to the local/Drive folder containing Parquet files. Retrieval/model evaluation needs `train.parquet`; visible test data is not independent validation.
 
 The earlier [`CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) covers audit, unit tests, preprocessing and optional model smoke checks, but imports project modules; its bounded PyTorch run is **not a competition-ready predictor**.
 

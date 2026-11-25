@@ -2,6 +2,12 @@
 
 All project changes use semantic versions. Any source, test, notebook, or workflow change must update `VERSION`, add a changelog entry, and update the affected module/notebook version header in the same change. Each entry records scope, evidence, and unresolved acceptance gates; version bumps do not imply an accuracy improvement.
 
+## 1.0.0 — 2026-11-19
+
+- Rename and extend the self-contained notebook as `Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb`, retaining EDA and adding inline Tasks 2–8 utilities: pinned identity/MRR tests, deterministic preprocessing, cosine/modified-cosine/entropy similarity, molecule-level spectrum fusion, mass-based candidate pool, grouped evaluation helper, optional fingerprint MLP with early stopping, rank fusion, and strict submission assembly.
+- Clearly gate measured retrieval/recall/MRR, candidate coverage/licensing, learned-model improvements, and offline submission: no local `train.parquet` is mounted and the visible test preview is not independent validation.
+- **Verification:** notebook JSON and all code-cell syntax parsed. Pipeline code cells executed with RDKit 2026.03.3: Task 2 identity/MRR and Task 3 preprocessing/adduct assertions passed; Task 4 similarity and Task 7 fusion smoke checks passed; synthetic mass-candidate retrieval passed. No train parquet was present, PyTorch was unavailable, and no Task 4–8 performance acceptance is claimed.
+
 ## 0.9.0 — 2026-11-19
 
 - Add evidence-based interpretation of supplied train/test sample correlations, sample quantiles, and molecular-label statistics. Explicitly distinguish spectra-level versus molecule-aggregated effects, sample coverage and domain shift; avoid performance claims.
