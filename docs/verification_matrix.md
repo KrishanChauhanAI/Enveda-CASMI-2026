@@ -1,6 +1,6 @@
 # Iterative verification matrix
 
-**Project version 0.7.0 | Review date 2026-11-19 UTC**
+**Project version 0.9.0 | Review date 2026-11-19 UTC**
 
 This matrix treats each acceptance criterion as an evidence claim. `PASS` means the test/data evidence named below exists; `PARTIAL` means code exists but an acceptance condition remains; `BLOCKED` means required inputs or implementation are absent. The visible test parquet is training-derived and is not valid independent validation.
 
@@ -15,9 +15,9 @@ This matrix treats each acceptance criterion as an evidence claim. `PASS` means 
 | 7. Ranking / ensemble | Ablation shows ensemble improves over strongest component on valid held-out molecules. | **BLOCKED** | Existing fingerprint/mass rank heuristic is not calibrated; no library evidence ensemble, ablation, uncertainty or MRR improvement is measured. | Add ranking features only after retrieval, then compare single-channel and ensemble MRR with grouped/bootstrap evaluation. |
 | 8. Submission / offline deployment | Exact test ID coverage, valid unique SMILES, <=25 candidates, official scorer, offline <=9h notebook rerun. | **PARTIAL** | Baseline writes a CSV and Task 2 validator checks schema/SMILES/IDs given a solution frame. No real submission, hidden rerun, runtime benchmark, or offline notebook audit exists. | Validate template and exact hidden IDs at inference, run official metric on legal validation, test offline notebook with bundled weights/index under time/memory cap. |
 
-## Recent rerun (project 0.7.0)
+## Recent rerun (project 0.9.0)
 
-All 10 executable code cells in `notebooks/CASMI_2026_local_eda_v0.7.0.ipynb` ran successfully in this workspace against the available `data/test.parquet`. Full scan matched Parquet metadata at 1,213 rows; 400 molecule IDs and 1,213 unique spectrum IDs were observed. Task 2 identity/MRR and Task 3 preprocessing/adduct smoke checks passed; 8 static PNG and 7 hoverable HTML charts were generated in temporary verification output. The notebook also exports exact first/last-five raw records and a full audit when run. `train.parquet` is absent: full train scan, train/test contrasts, and train-derived structure EDA remain pending. This preview is training-derived and does not constitute independent validation or model evidence.
+All 10 executable code cells in `notebooks/CASMI_2026_local_eda_v0.7.0.ipynb` ran successfully in this workspace against the available `data/test.parquet`. Full scan matched Parquet metadata at 1,213 rows; 400 molecule IDs and 1,213 unique spectrum IDs were observed. Task 2 identity/MRR and Task 3 preprocessing/adduct smoke checks passed; 8 static PNG and 7 hoverable HTML charts were generated in temporary verification output. The notebook also exports exact first/last-five raw records and a full audit when run. `train.parquet` is absent: full train scan, train/test contrasts, and train-derived structure EDA remain pending. This preview is training-derived and does not constitute independent validation or model evidence. In v0.8.0 the plot cell additionally displays each saved PNG inline alongside the interactive Plotly chart; this display change has not yet been rerun end-to-end. v0.9.0 adds narrative interpretations of user-provided sample correlation and structure-statistics outputs; those summaries were not independently reproduced here.
 
 ## Versioning and change gate
 

@@ -2,6 +2,17 @@
 
 All project changes use semantic versions. Any source, test, notebook, or workflow change must update `VERSION`, add a changelog entry, and update the affected module/notebook version header in the same change. Each entry records scope, evidence, and unresolved acceptance gates; version bumps do not imply an accuracy improvement.
 
+## 0.9.0 — 2026-11-19
+
+- Add evidence-based interpretation of supplied train/test sample correlations, sample quantiles, and molecular-label statistics. Explicitly distinguish spectra-level versus molecule-aggregated effects, sample coverage and domain shift; avoid performance claims.
+- Carry forward inline display of the static 600-DPI and interactive plots while saving both artifacts.
+- **Verification:** notebook JSON and executable-cell syntax validation pending for this revision; supplied summaries are user-provided outputs, not independently reproduced in this workspace.
+
+## 0.8.0 — 2026-11-19
+
+- Make every EDA visualization appear inline in the running notebook cell as both the saved 600-DPI PNG and interactive Plotly figure, while writing PNG and HTML artifacts to `casmi_eda_v0.8.0/`.
+- **Verification:** notebook format/source updated; rerun against the available Parquet files is pending.
+
 ## 0.7.0 — 2026-11-19
 
 - Add a fully inline notebook revision with exact raw first/last-five endpoint exports, complete batch scanning, 600-DPI per-chart PNGs and hoverable HTML plots.
