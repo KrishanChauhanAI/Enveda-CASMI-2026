@@ -2,6 +2,15 @@
 
 All project changes use semantic versions. Any source, test, notebook, or workflow change must update `VERSION`, add a changelog entry, and update the affected module/notebook version header in the same change. Each entry records scope, evidence, and unresolved acceptance gates; version bumps do not imply an accuracy improvement.
 
+## 1.1.0 — 2026-11-19
+
+- Add the task-by-task scientific research checklist in `docs/experiment_checklist.md`, with explicit completed evidence, blocked gates and stop conditions.
+- Rename/update pipeline notebook as v1.1.0; full-file row/category/QC scans now also feed exact all-row fixed-bin histogram charts. Bounded per-spectrum visual views remain clearly labeled and are not presented as population summaries.
+- Add a research architecture/audit memo covering role boundaries for matchms, GNPS, RDKit, SIRIUS, MIST-CF, DreaMS, forward-spectrum tools and Auto3D. Treat Auto3D conformers as optional candidate geometry, not structure prediction; require a measured go/no-go experiment.
+- Correct the validation design: disable the v1.0 identity-disjoint/train-only-pool evaluator because held-out truths cannot occur in that catalog. Add distinct Track A held-out-spectrum and Track B unseen-identity protocols, plus catalog-coverage audit utilities in `src/validation.py`.
+- Add `src/candidate_index.py` for precomputed exact masses and binary-search ppm candidates; update `src/solution.py` to group by official InChIKey14 and deduplicate candidates by identity; update Task 1 source scanner with full-row histograms.
+- **Verification:** 17 tests + 10 subtests pass; notebook JSON/code cells execute end-to-end against available 1,213-row test preview; full-data histogram counts equal every row (1,213) for precursor/peak/base-peak, with collision-energy count reflecting 1,809 values. Synthetic candidate mass-index test passes under RDKit 2026.03.3. No train file or PyTorch available; retrieval/model performance and Auto3D utility remain unverified.
+
 ## 1.0.0 — 2026-11-19
 
 - Rename and extend the self-contained notebook as `Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb`, retaining EDA and adding inline Tasks 2–8 utilities: pinned identity/MRR tests, deterministic preprocessing, cosine/modified-cosine/entropy similarity, molecule-level spectrum fusion, mass-based candidate pool, grouped evaluation helper, optional fingerprint MLP with early stopping, rank fusion, and strict submission assembly.

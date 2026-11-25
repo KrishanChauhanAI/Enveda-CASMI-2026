@@ -6,7 +6,7 @@ See [`docs/stage1_problem_and_research.md`](docs/stage1_problem_and_research.md)
 
 ## Colab / Jupyter workbench
 
-For the latest self-contained pipeline (all code inline, no `src/` imports), open [`notebooks/Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb`](notebooks/Enveda_CASMI_2026_Pipeline_v1.0.0.ipynb). It retains the EDA, then adds staged Task 2–8 identity, preprocessing, spectral similarity, candidate-pool, optional fingerprint-learning, ranking-fusion, and submission utilities with explicit validation gates. Set `DATA_DIR` to the local/Drive folder containing Parquet files. Retrieval/model evaluation needs `train.parquet`; visible test data is not independent validation.
+For the latest self-contained pipeline (all code inline, no `src/` imports), open [`notebooks/Enveda_CASMI_2026_Pipeline_v1.1.0.ipynb`](notebooks/Enveda_CASMI_2026_Pipeline_v1.1.0.ipynb). It retains EDA, adds staged Task 2–8 utilities, exact full-scan histogram charts, and distinct known-structure/unseen-identity validation protocols. It also documents the repository audit and model/library roles in [`docs/model_library_responsibilities.md`](docs/model_library_responsibilities.md), with acceptance gates tracked in [`docs/experiment_checklist.md`](docs/experiment_checklist.md). Set `DATA_DIR` to the local/Drive folder containing Parquet files. Retrieval/model evaluation needs `train.parquet`; visible test data is not independent validation.
 
 The earlier [`CASMI_2026_local_workbench.ipynb`](notebooks/CASMI_2026_local_workbench.ipynb) covers audit, unit tests, preprocessing and optional model smoke checks, but imports project modules; its bounded PyTorch run is **not a competition-ready predictor**.
 
