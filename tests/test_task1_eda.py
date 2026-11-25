@@ -1,4 +1,4 @@
-"""Task 1 scanner tests — test suite version 1.1.0, 2026-11-19 UTC."""
+"""Task 1 scanner tests — test suite version 1.2.0, 2026-11-19 UTC."""
 import tempfile
 import unittest
 from pathlib import Path
@@ -31,6 +31,9 @@ class Task1EdaTest(unittest.TestCase):
         self.assertEqual(report["sample_rows"], 2)
         self.assertIn("molecule_id", [x["name"] for x in report["columns"]])
         self.assertEqual(len(sample), 2)
+        hist = report["full_data_histograms"]
+        self.assertEqual(sum(hist["precursor_mz"]["counts"]), 3)
+        self.assertEqual(sum(hist["peak_count"]["counts"]), 3)
 
 
 if __name__ == "__main__":

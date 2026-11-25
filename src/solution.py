@@ -1,6 +1,6 @@
 """Offline CASMI starter: spectrum-to-fingerprint PyTorch model and candidate ranking.
 
-Version 0.4.0 | 2026-11-19 UTC. Removes unused data retention; prototype still needs streamed training.
+Version 0.5.0 | 2026-11-19 UTC. Identity-grouped splits and InChIKey14 candidate dedup; prototype still needs streamed training and real validation.
 Test-only data can be audited, but cannot supervise or validate molecular predictions.
 """
 from __future__ import annotations
@@ -19,8 +19,10 @@ from torch.utils.data import DataLoader, TensorDataset
 
 try:
     from .chemistry import neutral_mass
+    from .identity import canonicalize_smiles_to_ik14
 except ImportError:  # Support direct execution as `python src/solution.py`.
     from chemistry import neutral_mass
+    from identity import canonicalize_smiles_to_ik14
 
 BIN_WIDTH = 0.5
 MAX_MZ = 2048.0
@@ -47,8 +49,10 @@ def encode_spectrum(mzs: Any, intensities: Any) -> np.ndarray:
     try:
         mzs = np.asarray(mzs, dtype=np.float64)
         intensities = np.asarray(intensities, dtype=np.float64)
-    except (TypeError, ValueError):
-        return features.reshape(-1)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Peak arrays must be numeric one-dimensional sequences") from exc
+    if mzs.ndim != 1 or intensities.ndim != 1 or len(mzs) != len(intensities):
+        raise ValueError("m/z and intensity arrays must be aligned one-dimensional arrays")
     valid = np.isfinite(mzs) & np.isfinite(intensities) & (mzs >= 0) & (mzs < MAX_MZ) & (intensities > 0)
     if valid.any():
         bins = np.floor(mzs[valid] / BIN_WIDTH).astype(np.int64)
@@ -77,7 +81,8 @@ def build_training(frame: pd.DataFrame, smiles_col: str) -> tuple[np.ndarray, np
             continue
         x.append(encode_spectrum(row_data["ms2_mzs"], row_data["ms2_normalized_intensities"]))
         y.append(fp)
-        groups.append(str(row_data.get("molecule_id", smi)))
+        # Competition identity merges stereoisomers/tautomers; group by the scorer's key to block label leakage.
+        groups.append(canonicalize_smiles_to_ik14(smi) or str(smi))
     if not x:
         raise ValueError("No usable labeled spectra. Check SMILES column name and data contents.")
     return np.stack(x), np.stack(y), np.asarray(groups)
@@ -183,15 +188,21 @@ def aggregate_test(frame: pd.DataFrame) -> tuple[list[str], np.ndarray]:
 
 # Rank available training structures by predicted fingerprint agreement and precursor mass consistency.
 def rank_candidates(model: SpectrumFingerprintNet, ids: list[str], encoded: np.ndarray, train_frame: pd.DataFrame, test_frame: pd.DataFrame, smiles_col: str, device: torch.device, top_k: int = 25) -> list[str]:
-    smiles = train_frame[smiles_col].dropna().astype(str).drop_duplicates().tolist()
+    # Deduplicate by official connectivity identity rather than raw SMILES spelling.
+    smiles = train_frame[smiles_col].dropna().astype(str).tolist()
     valid_smiles, fps, masses = [], [], []
+    seen_identities: set[str] = set()
     mass_by_smiles = {}
     if "precursor_mz" in train_frame.columns:
         for _, row in train_frame[[smiles_col, "precursor_mz"] + (["adduct"] if "adduct" in train_frame else [])].dropna(subset=[smiles_col, "precursor_mz"]).iterrows():
             mass_by_smiles.setdefault(str(row[smiles_col]), neutral_mass(float(row["precursor_mz"]), row.get("adduct", "")))
     for smi in smiles:
+        identity = canonicalize_smiles_to_ik14(smi)
+        if not identity or identity in seen_identities:
+            continue
         fp = smiles_to_fp(smi)
         if fp.any():
+            seen_identities.add(identity)
             valid_smiles.append(smi)
             fps.append(fp)
             masses.append(mass_by_smiles.get(smi, np.nan))
